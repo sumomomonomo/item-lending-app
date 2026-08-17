@@ -1,0 +1,26 @@
+services:
+  app:
+    build: .
+    tty: true
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    depends_on:
+      - db
+  db:
+    build:
+      context: "."
+      dockerfile: "db.Dockerfile"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: schedule_arranger
+    volumes:
+      - schedule-arranger-data:/var/lib/postgresql/data
+
+volumes:
+  node_modules:
+  schedule-arranger-data:
+    external: true

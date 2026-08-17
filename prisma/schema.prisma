@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId       Int           @id
+  username     String        @unique @db.VarChar(255)
+  items        Item[]
+  reservations Reservation[]
+
+  @@map(name: "users")
+}
+
+model Item {
+  itemId       String        @id @db.Uuid
+  itemName     String        @db.VarChar(255)
+  memo         String        @db.Text
+  totalStock   Int
+  createdBy    Int
+  updatedAt    DateTime      @db.Timestamptz(6)
+  user         User          @relation(fields: [createdBy], references: [userId], onDelete: Cascade)
+  reservations Reservation[]
+
+  @@index(fields: [createdBy])
+  @@map(name: "items")
+}
+
+model Reservation {
+  itemId     String    @db.Uuid
+  userId     Int
+  quantity   Int       @default(0)   // 借りている数(0なら未貸出)
+  borrowedAt DateTime? @db.Timestamptz(6)
+  item       Item      @relation(fields: [itemId], references: [itemId], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@id(fields: [itemId, userId], name: "reservationCompositeId")
+  @@index(fields: [itemId])
+  @@index(fields: [userId])
+  @@map(name: "reservations")
+}

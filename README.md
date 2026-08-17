@@ -1,0 +1,62 @@
+# 部活動備品貸出くん
+
+部活動・サークルの備品(三脚、カメラ、テントなど)の貸出・返却状況を管理する Web アプリケーションです。GitHub アカウントでログインし、誰でも備品を登録・閲覧・貸出できます。
+
+「Webアプリケーション開発４」の授業で作成した「予定調整くん」の技術スタックと設計パターンをベースに、備品貸出管理という別ドメインに応用して作成しました。
+
+## 作品名の説明
+
+部員・サークルメンバーが、共有の備品を「借りる」「返す」ボタン一つで管理できるアプリです。備品ごとに在庫総数を設定でき、在庫を超えた貸出はできないようになっています。同じ備品を複数個借りることもでき、マイページで自分が現在借りているものを一覧確認できます。
+
+## 頑張った所・工夫した所・見どころ
+
+- **在庫超過を防ぐ排他的なチェックロジック**: 貸出リクエストのたびに、全ユーザーの貸出中合計数を集計し、在庫総数を超える場合はリクエストを拒否します。エラー時は専用のエラーページに飛ばさず、備品詳細ページにそのまま留まり赤字でエラーメッセージを表示するようにしました。
+- **作成者のみが在庫総数を変更できる権限管理**: 備品の登録は誰でもできますが、備品名・メモ・在庫総数の編集や削除は登録者本人のみ可能にする認可ロジックを実装しています。
+- **複数個の貸出・返却に対応**: 単純な「借りる/返す」の二値ではなく、個数を指定して貸出・一部返却ができるようにしています(例: 三脚を2本借りて、1本だけ先に返す、など)。
+- **マイページ機能**: 自分が現在借りている備品を一覧で確認でき、そのまま返却操作に移れます。
+- **既存プロジェクトの設計パターンの応用**: 「予定調整くん」の出欠(Availability)モデルの複合主キー設計パターンを、貸出予約(Reservation)モデルに応用しました。
+
+## 技術スタック
+
+「予定調整くん」と同じ構成を踏襲しています。
+
+- Node.js / [Hono](https://hono.dev/)(Webフレームワーク)
+- Prisma(ORM)/ PostgreSQL
+- GitHub OAuth 認証(`@hono/oauth-providers`)+ `iron-session`
+- Zod によるバリデーション
+- Jest(テスト)
+- webpack + Bootstrap(フロントエンド)
+- Docker / Docker Compose(開発環境)
+
+## セットアップ(ローカル開発)
+
+```bash
+git clone https://github.com/sumomomonomo/item-lending-app.git
+cd item-lending-app
+docker volume create item-lending-data
+docker compose up --build
+```
+
+`.env` に以下の環境変数を設定してください。
+
+```
+DATABASE_URL=postgresql://postgres:postgres@db:5432/item_lending
+SESSION_PASSWORD=(32文字以上のランダムな文字列)
+GITHUB_CLIENT_ID=(GitHub OAuth AppのクライアントID)
+GITHUB_CLIENT_SECRET=(GitHub OAuth Appのクライアントシークレット)
+CSRF_TRUSTED_ORIGIN=http://localhost:3000
+```
+
+コンテナ起動後、`http://localhost:3000` にアクセスしてください。
+
+## テスト
+
+```bash
+docker compose exec app npm test
+```
+
+## 作品情報
+
+- **作品名**: 部活動備品貸出くん
+- **WebアプリケーションのURL**: (Renderデプロイ後に追記)
+- **GitHubのURL**: https://github.com/sumomomonomo/item-lending-app
