@@ -28,33 +28,6 @@
 - webpack + Bootstrap(フロントエンド)
 - Docker / Docker Compose(開発環境)
 
-## セットアップ(ローカル開発)
-
-```bash
-git clone https://github.com/sumomomonomo/item-lending-app.git
-cd item-lending-app
-docker volume create item-lending-data
-docker compose up --build
-```
-
-`.env` に以下の環境変数を設定してください。
-
-```
-DATABASE_URL=postgresql://postgres:postgres@db:5432/item_lending
-SESSION_PASSWORD=(32文字以上のランダムな文字列)
-GITHUB_CLIENT_ID=(GitHub OAuth AppのクライアントID)
-GITHUB_CLIENT_SECRET=(GitHub OAuth Appのクライアントシークレット)
-CSRF_TRUSTED_ORIGIN=http://localhost:3000
-```
-
-コンテナ起動後、`http://localhost:3000` にアクセスしてください。
-
-## テスト
-
-```bash
-docker compose exec app npm test
-```
-
 ## 作品情報
 
 - **作品名**: 部活動備品貸出くん
