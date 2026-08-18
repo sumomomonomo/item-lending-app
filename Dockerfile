@@ -12,4 +12,10 @@ ENV TZ=Asia/Tokyo
 
 WORKDIR /app
 COPY . /app
+
+# ビルド時に済ませる重い処理(コンテナ起動のたびにやり直さない)
+RUN yarn install
+RUN npx prisma generate
+RUN npx webpack
+
 CMD ["sh", "run.sh"]
