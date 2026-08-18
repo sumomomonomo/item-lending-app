@@ -31,5 +31,5 @@
 ## 作品情報
 
 - **作品名**: 部活動備品貸出くん
-- **WebアプリケーションのURL**: (Renderデプロイ後に追記)
+- **WebアプリケーションのURL**: https://sumomomonomo-item-lending-app.onrender.com/
 - **GitHubのURL**: https://github.com/sumomomonomo/item-lending-app
